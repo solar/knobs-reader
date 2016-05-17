@@ -67,6 +67,6 @@ class ReaderSpec extends FlatSpec {
   }
 
   it should "fail on invalid reader" in {
-    assert(config.readAs[Simple] == -\/(ReadException("read failure")))
+    assert(config.readAs[Simple] == -\/(KeyNotFound()))
   }
 }

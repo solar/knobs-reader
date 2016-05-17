@@ -6,6 +6,6 @@ import shapeless._
 
 object Implicits {
   implicit class ConfigOps(val value: Config) extends AnyVal {
-    def readAs[A](implicit ev: Reader[A]): ConfigException \/ A = ev.read(value)
+    def readAs[A](implicit ev: Reader[A]): Result[A] = ev.read(value)
   }
 }

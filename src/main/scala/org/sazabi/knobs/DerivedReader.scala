@@ -16,14 +16,14 @@ object HListReader {
 
   implicit def hconsConfiguredReader[K <: Symbol, H, T <: HList](
       implicit key: Witness.Aux[K],
-      headEv: Strict[Configured[H]],
+      headConfigured: Strict[Configured[H]],
       tailReader: HListReader[T]): HListReader[FieldType[K, H] :: T] =
     new HListReader[FieldType[K, H] :: T] {
       def read(c: Config) = {
         for {
-          h <- c.lookup[H](key.value.name)(headEv.value)
+          h <- c.lookup[H](key.value.name)(headConfigured.value)
                 .map(\/-(_))
-                .getOrElse(-\/(ReadException()))
+                .getOrElse(-\/(KeyNotFound()))
           t <- tailReader.read(c)
         } yield field[K](h) :: t
       }
@@ -31,12 +31,12 @@ object HListReader {
 
   implicit def hconsReaderReader[K <: Symbol, H, T <: HList](
       implicit key: Witness.Aux[K],
-      headEv: Strict[Reader[H]],
+      headReader: Strict[Reader[H]],
       tailReader: HListReader[T]): HListReader[FieldType[K, H] :: T] =
     new HListReader[FieldType[K, H] :: T] {
       def read(c: Config) = {
         for {
-          h <- headEv.value.read(c.subconfig(key.value.name))
+          h <- headReader.value.read(c.subconfig(key.value.name))
           t <- tailReader.read(c)
         } yield field[K](h) :: t
       }
