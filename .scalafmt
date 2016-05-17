@@ -1,0 +1,6 @@
+--in-place
+--style defaultWithAlign
+--maxColumn 90
+--continuationIndentCallSite 2
+--assumeStandardLibraryStripMargin false
+--spacesInImportCurlyBraces true
