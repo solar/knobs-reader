@@ -2,8 +2,6 @@ name := "knobs-reader"
 organization := "org.sazabi"
 scalaVersion := "2.11.8"
 
-version := "0.0.1-SNAPSHOT"
-
 resolvers += Resolver.bintrayRepo("oncue", "releases")
 
 libraryDependencies ++= Seq(
