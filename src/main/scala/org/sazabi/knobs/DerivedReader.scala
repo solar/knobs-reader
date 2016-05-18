@@ -23,7 +23,7 @@ object HListReader {
         for {
           h <- c.lookup[H](key.value.name)(headConfigured.value)
                 .map(\/-(_))
-                .getOrElse(-\/(KeyNotFound()))
+                .getOrElse(-\/(FailedAt(key.value.name, Some(c))))
           t <- tailReader.read(c)
         } yield field[K](h) :: t
       }
