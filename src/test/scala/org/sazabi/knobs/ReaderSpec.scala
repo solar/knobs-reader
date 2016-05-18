@@ -52,23 +52,27 @@ class ReaderSpec extends FlatSpec {
   }
 
   it should "read A from subconfig" in {
-    assert(config.readSubAs[Simple]("nested.simple") == \/-(
-            Simple("simple value")))
-    assert(config.readSubAs[Composed]("nested.composed") == \/-(
-            Composed(123, "my name")))
+    assert(config.readSubAs[Simple]("nested.simple") == \/-(Simple("simple value")))
+    assert(
+      config.readSubAs[Composed]("nested.composed") == \/-(Composed(123, "my name")))
   }
 
   it should "read nested values" in {
     assert(
-        config.readSubAs[Nested]("nested") == \/-(
-            Nested(simple = Simple("simple value"),
-                   id = 1,
-                   composed = Composed(id = 123, name = "my name"))))
+      config.readSubAs[Nested]("nested") == \/-(
+        Nested(simple = Simple("simple value"),
+               id = 1,
+               composed = Composed(id = 123, name = "my name"))))
   }
 
   it should "fail on invalid reader" in {
-    assert(config.readSubAs[Simple]("nested") == -\/(
-            FailedAt("value", Some(config.subconfig("nested")))))
+    val e = config.readSubAs[Simple]("nested")
+    assert(e == -\/(FailedAt("value", Some(config.subconfig("nested")))))
+
+    assert(
+      e.swap
+        .map(_.message == "failed at 'value' in Config(Map(composed.name -> CfgText(my name), composed.id -> CfgNumber(123.0), ignored.fuga -> CfgText(value), id -> CfgNumber(1.0), simple.value -> CfgText(simple value), ignored.hoge -> CfgBool(true)))")
+        .getOrElse(false))
   }
 
   it should "map to Reader[B]" in {
