@@ -23,7 +23,6 @@ object HListReader {
       def read(c: Config) = {
         for {
           h <- headReadAt.value.read(c, key.value.name)
-          _ = println(s"head(${key.value.name}) is $h")
           t <- tailReader.read(c)
         } yield field[K](h) :: t
       }

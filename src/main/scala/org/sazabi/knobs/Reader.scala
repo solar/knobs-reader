@@ -30,6 +30,8 @@ trait Reader[A] extends Serializable { self =>
 }
 
 object Reader {
+  final def apply[A](implicit ev: Reader[A]): Reader[A] = ev
+
   final def apply[A](f: Config => Result[A]): Reader[A] = new Reader[A] {
     def read(c: Config) = f(c)
   }

@@ -33,6 +33,8 @@ trait ReadAt[A] extends Serializable { self =>
 }
 
 object ReadAt {
+  final def apply[A](implicit ev: ReadAt[A]): ReadAt[A] = ev
+
   final def apply[A](f: (Config, String) => Result[A]): ReadAt[A] =
     new ReadAt[A] {
       final def read(c: Config, key: String) = f(c, key)

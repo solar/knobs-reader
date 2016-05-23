@@ -36,6 +36,16 @@ class ReadAtSpec extends FlatSpec {
     assert(config.readAt[String]("nested.simple.value") == \/-("simple value"))
   }
 
+  it should "get implicit readat" in {
+    val a = ReadAt[String]
+  }
+
+  it should "create ReadAt on the fly" in {
+    val r = ReadAt[java.net.URL] { (c: Config, k: String) =>
+      ReadAt[String].read(c, k).map(s => new java.net.URL(s)) // unsafe
+    }
+  }
+
   "ReadAt[Option[A]]" should "raed a optional value on a key" in {
     assert(config.readAt[Option[String]]("nonono") == \/-(None))
     assert(config.readAt[Option[String]]("optional.a") == \/-(Some("hoge")))
