@@ -1,9 +1,10 @@
 package org.sazabi.knobs
 
-import knobs.{ Config, Configured }
+import knobs.Config
 import scalaz._
 import shapeless._
 import shapeless.labelled.{ field, FieldType }
+import org.sazabi.knobs.Implicits._
 
 trait HListReader[L <: HList] extends Reader[L]
 
@@ -14,16 +15,15 @@ object HListReader {
     def read(c: Config) = \/-(HNil)
   }
 
-  implicit def hconsConfiguredReader[K <: Symbol, H, T <: HList](
+  implicit def hconsReadAtReader[K <: Symbol, H, T <: HList](
       implicit key: Witness.Aux[K],
-      headConfigured: Strict[Configured[H]],
+      headReadAt: Strict[ReadAt[H]],
       tailReader: HListReader[T]): HListReader[FieldType[K, H] :: T] =
     new HListReader[FieldType[K, H] :: T] {
       def read(c: Config) = {
         for {
-          h <- c.lookup[H](key.value.name)(headConfigured.value)
-                .map(\/-(_))
-                .getOrElse(-\/(FailedAt(key.value.name, Some(c))))
+          h <- headReadAt.value.read(c, key.value.name)
+          _ = println(s"head(${key.value.name}) is $h")
           t <- tailReader.read(c)
         } yield field[K](h) :: t
       }

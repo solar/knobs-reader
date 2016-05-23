@@ -57,3 +57,7 @@ pomExtra := (
       <url>https://github.com/solar</url>
     </developer>
   </developers>)
+
+import net.ceedubs.sbtctags.CtagsKeys._
+ctagsGeneration := { _ => () }
+dependencySrcUnzipDir := baseDirectory(b => b / "gen-ctags").value

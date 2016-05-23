@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+dirs=(
+  gen-ctags/knobs(N-/)
+  gen-ctags/shapeless(N-/)
+  gen-ctags/scalaz(N-/)
+)
+
+ctags \
+  -R \
+  -f .tags \
+  --tag-relative=no \
+  --exclude=log \
+  $dirs

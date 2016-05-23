@@ -1,3 +1,4 @@
 target/
-project/project/
-.tags
+/project/project/
+/.tags
+/gen-ctags/

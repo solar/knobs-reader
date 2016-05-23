@@ -26,6 +26,10 @@ class ReaderSpec extends FlatSpec {
     |     fuga = "value"
     |   }
     | }
+    | optional {
+    |   a = "hoge"
+    |   c = true
+    | }
     |""".stripMargin).getOrElse(Config.empty)
 
   case class Simple(value: String)
@@ -43,11 +47,18 @@ class ReaderSpec extends FlatSpec {
     implicit val reader = deriveReader[Nested]
   }
 
-  "Reader[A]" should "read A from knobs.Config" in {
+  case class Optional(a: String, b: Option[Int], c: Option[Boolean])
+  object Optional {
+    implicit val reader = deriveReader[Optional]
+  }
+
+  behavior of "Reader[A]"
+
+  it should "read A from knobs.Config" in {
     val config = Config.parse("""
       |value = "my value"
       |""".stripMargin).getOrElse(Config.empty)
-
+  
     assert(config.readAs[Simple] == \/-(Simple("my value")))
   }
 
@@ -64,15 +75,17 @@ class ReaderSpec extends FlatSpec {
                id = 1,
                composed = Composed(id = 123, name = "my name"))))
   }
+  
+  it should "read optional values" in {
+    assert(config.readSubAs[Optional]("optional") == \/-(
+      Optional(a = "hoge", b = None, c = Some(true))))
+
+    assert(config.readSubAs[Option[Optional]]("nested.optional") == \/-(None))
+  }
 
   it should "fail on invalid reader" in {
     val e = config.readSubAs[Simple]("nested")
-    assert(e == -\/(FailedAt("value", Some(config.subconfig("nested")))))
-
-    assert(
-      e.swap
-        .map(_.message == "failed at 'value' in Config(Map(composed.name -> CfgText(my name), composed.id -> CfgNumber(123.0), ignored.fuga -> CfgText(value), id -> CfgNumber(1.0), simple.value -> CfgText(simple value), ignored.hoge -> CfgBool(true)))")
-        .getOrElse(false))
+    assert(e == -\/(NoSuchKey("value")))
   }
 
   it should "map to Reader[B]" in {
