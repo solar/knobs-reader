@@ -36,10 +36,11 @@ object Reader {
     def read(c: Config) = f(c)
   }
 
-  implicit final def optionReader[A](implicit ev: Reader[A]): Reader[Option[A]] = new Reader[Option[A]] {
-    final def read(c: Config): Result[Option[A]] =
-      ev.read(c).fold(_ => \/-(None), a => \/-(Some(a)))
-  }
+  implicit final def optionReader[A](implicit ev: Reader[A]): Reader[Option[A]] =
+    new Reader[Option[A]] {
+      final def read(c: Config): Result[Option[A]] =
+        ev.read(c).fold(_ => \/-(None), a => \/-(Some(a)))
+    }
 
   /**
     * Scalaz type classes for Raeder

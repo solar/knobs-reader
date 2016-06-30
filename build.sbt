@@ -6,9 +6,9 @@ resolvers += Resolver.bintrayRepo("oncue", "releases")
 
 libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0",
-  "oncue.knobs" %% "core" % "3.6.1a",
+  "oncue.knobs" %% "core" % "3.8.1a",
   "com.chuusai" %% "shapeless" % "2.3.1",
-  "org.scalatest" %% "scalatest" % "3.0.0-M15" % "test")
+  "org.scalatest" %% "scalatest" % "3.0.0-RC3" % "test")
 
 scalacOptions ++= Seq(
   "-unchecked",

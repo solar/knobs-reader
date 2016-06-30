@@ -4,6 +4,7 @@ import knobs.Config
 import scalaz._
 import shapeless._
 import shapeless.labelled.{ field, FieldType }
+
 import org.sazabi.knobs.Implicits._
 
 trait HListReader[L <: HList] extends Reader[L]

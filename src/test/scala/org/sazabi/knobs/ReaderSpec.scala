@@ -58,27 +58,28 @@ class ReaderSpec extends FlatSpec {
     val config = Config.parse("""
       |value = "my value"
       |""".stripMargin).getOrElse(Config.empty)
-  
+
     assert(config.readAs[Simple] == \/-(Simple("my value")))
   }
 
   it should "read A from subconfig" in {
-    assert(config.readSubAs[Simple]("nested.simple") == \/-(Simple("simple value")))
-    assert(
-      config.readSubAs[Composed]("nested.composed") == \/-(Composed(123, "my name")))
+    assert(config.readSubAs[Simple]("nested.simple") == \/-(
+            Simple("simple value")))
+    assert(config.readSubAs[Composed]("nested.composed") == \/-(
+            Composed(123, "my name")))
   }
 
   it should "read nested values" in {
     assert(
-      config.readSubAs[Nested]("nested") == \/-(
-        Nested(simple = Simple("simple value"),
-               id = 1,
-               composed = Composed(id = 123, name = "my name"))))
+        config.readSubAs[Nested]("nested") == \/-(
+            Nested(simple = Simple("simple value"),
+                   id = 1,
+                   composed = Composed(id = 123, name = "my name"))))
   }
-  
+
   it should "read optional values" in {
     assert(config.readSubAs[Optional]("optional") == \/-(
-      Optional(a = "hoge", b = None, c = Some(true))))
+            Optional(a = "hoge", b = None, c = Some(true))))
 
     assert(config.readSubAs[Option[Optional]]("nested.optional") == \/-(None))
   }
@@ -90,16 +91,19 @@ class ReaderSpec extends FlatSpec {
 
   it should "map to Reader[B]" in {
     val mapped = Nested.reader.map(_.simple)
-    assert(config.readSubAs[Simple]("simple") == mapped.read(config.subconfig("simple")))
+    assert(config.readSubAs[Simple]("simple") == mapped.read(
+            config.subconfig("simple")))
   }
 
   it should "flatMap to Reader[B]" in {
     val mapped = Nested.reader.map(_.simple)
-    assert(config.readSubAs[Simple]("simple") == mapped.read(config.subconfig("simple")))
+    assert(config.readSubAs[Simple]("simple") == mapped.read(
+            config.subconfig("simple")))
   }
 
   it should "flatMapR to Reader[B]" in {
     val mapped = Nested.reader.map(_.simple)
-    assert(config.readSubAs[Simple]("simple") == mapped.read(config.subconfig("simple")))
+    assert(config.readSubAs[Simple]("simple") == mapped.read(
+            config.subconfig("simple")))
   }
 }

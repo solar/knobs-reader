@@ -11,7 +11,8 @@ trait Implicits {
 
 class ConfigOps(val underlying: Config) extends AnyVal {
   def readAs[A](implicit ev: Reader[A]): Result[A] = ev.read(underlying)
-  def readAt[A](key: String)(implicit ev: ReadAt[A]): Result[A] = ev.read(underlying, key)
+  def readAt[A](key: String)(implicit ev: ReadAt[A]): Result[A] =
+    ev.read(underlying, key)
   def readSubAs[A](key: String)(implicit ev: Reader[A]): Result[A] =
     ev.read(underlying.subconfig(key))
 
